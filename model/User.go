@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/wxkj001/bbeb/core"
 	"log"
+	"time"
 )
 
 type UserModel struct {
@@ -14,8 +15,8 @@ type BlogUsers struct {
 	UserEmail string `xorm:"varchar(255)"`
 	Passwd string `xorm:"varchar(255) ->"`
 	Headimgurl string `xorm:"TEXT"`
-	Time int64 `xorm:"bigint(20)"`
-	LoginTime int64 `xorm:"bigint(20)"`
+	Time time.Time `xorm:"DateTime"`
+	LoginTime time.Time `xorm:"DateTime"`
 	Status int64 `xorm:"int(2)"`
 }
 func (m *UserModel)GetUser(username string,passwd string) interface{} {

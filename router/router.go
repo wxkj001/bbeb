@@ -1,43 +1,45 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/wxkj001/bbeb/core"
-	"github.com/wxkj001/bbeb/controller/Admin"
-	"github.com/gin-contrib/sessions"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/wxkj001/bbeb/controller/Home"
+	"io"
+	"html/template"
 )
-
-var Router *gin.Engine
-
-//路由列表
-func List() {
-	F:=core.FrameWork{}
-	c:=F.Config()
-	Router.Delims(c.Section("TMPL").Key("L_DELIM").String(),c.Section("TMPL").Key("R_DELIM").String())
-	Router.Static("/public/", "./public")
-	Router.LoadHTMLGlob("view/**/**/*")
-	Admins:=Router.Group("Admin")
-	store := sessions.NewCookieStore([]byte("session"))
-	Admins.Use(sessions.Sessions("admin", store))
-	Admins.Use(Middleware)
-	{
-		Index:=Admin.Index{}
-
-		Admins.GET("/", Index.Index)
-		Admins.GET("/login", Index.Login)
-		Admins.POST("/login",Index.LoginPost)
-		Admins.GET("/IndexInfo",Index.IndexInfo)
-		{
-			Article:=Admin.Article{}
-			Admins.GET("/Article",Article.ArticleGet)
-		}
-	}
+type Template struct {
+	templates *template.Template
 }
 
-//路由中间件
-func Middleware(g *gin.Context) {
-	 core.SESSION = sessions.Default(g)
-	 //core.SESSION.Set("time",time.Now())
-	 //core.SESSION.Save()
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+}
+//路由列表
+func List() {
+	//F:=core.FrameWork{}
+	//c:=F.Config()
+	e := echo.New()
+	e.Debug = true
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Static("/public", "public")
+	//t := &Template{
+	//	templates: template.Must(template.ParseGlob("./view/*.html")),
+	//}
+	//e.Renderer=t
 
+	HomeR:=e.Group("/Home")
+	HomeR.Use(HomeHeader)
+	{
+		HomrC:=Home.PublicController{}
+		HomeR.GET("/public/env",HomrC.Index)
+	}
+
+	e.Logger.Fatal(e.Start(":3001"))
+}
+func HomeHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set(echo.HeaderServer, "Echo/3.0")
+		return next(c)
+	}
 }

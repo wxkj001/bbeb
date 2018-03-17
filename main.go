@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/wxkj001/bbeb/router"
 	"github.com/wxkj001/bbeb/core"
+	"github.com/labstack/echo"
 	"os"
 	"github.com/go-xorm/xorm"
 	"log"
 	"github.com/wxkj001/bbeb/model"
+	"net/http"
+	"github.com/wxkj001/bbeb/router"
 )
 func init()  {
 	F:=core.FrameWork{}
@@ -32,18 +33,12 @@ func init()  {
 	if err!=nil{
 		log.Println("数据库连接失败")
 	}
-	orm.Sync2(new(model.BlogUsers))
+	orm.Sync2(new(model.BlogUsers),new(model.BlogTags),new(model.BlogArticle))
 	core.ORM=orm
 }
+func hello(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello, World!")
+}
 func main() {
-	router.Router = gin.Default()
-	 //g.Delims("{{", "}}")
-	// g.Static("/Public/", "./Public")
-	// g.LoadHTMLGlob("view/**/*")
-	// g.Use(Middleware)
-	// {
-
-	// }
 	router.List()
-	router.Router.Run(":3000")
 }
