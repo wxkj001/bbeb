@@ -1,12 +1,12 @@
 package model
 
 import (
-	"github.com/wxkj001/bbeb/core"
 	"time"
+	"github.com/wxkj001/bbeb/core"
 )
 
 type ArticleModel struct {
-	*core.Model
+	//*core.Model
 }
 type BlogArticle struct {
 	Id int64 `xorm:"int(11) pk autoincr unique index"`
@@ -16,4 +16,10 @@ type BlogArticle struct {
 	TagId string `xorm:"varchar(255)"`
 	Time time.Time `xorm:"DateTime"`
 	Status int64 `xorm:"int(2)"`
+}
+
+func (this *ArticleModel)List(page int64) []BlogArticle {
+	var ba []BlogArticle
+	core.ORM.Where("1=1").Find(&ba)
+	return ba
 }

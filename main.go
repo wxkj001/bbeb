@@ -1,15 +1,14 @@
 package main
 
 import (
+	"github.com/wxkj001/bbeb/router"
 	"github.com/wxkj001/bbeb/core"
-	"github.com/labstack/echo"
 	"os"
 	"github.com/go-xorm/xorm"
 	"log"
 	"github.com/wxkj001/bbeb/model"
-	"net/http"
-	"github.com/wxkj001/bbeb/router"
 )
+
 func init()  {
 	F:=core.FrameWork{}
 	c:=F.Config()
@@ -18,6 +17,9 @@ func init()  {
 	password:=c.Section("database").Key("password").String()
 	database:=c.Section("database").Key("database").String()
 	port:=c.Section("database").Key("port").String()
+	if password==""&&database==""{
+
+	}
 	mapping := func(s string) string {
 		m := map[string]string{
 			"host": host,
@@ -36,9 +38,10 @@ func init()  {
 	orm.Sync2(new(model.BlogUsers),new(model.BlogTags),new(model.BlogArticle))
 	core.ORM=orm
 }
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
-}
 func main() {
+	_,err:=core.ORMLoad()
+	if err!=nil{
+
+	}
 	router.List()
 }

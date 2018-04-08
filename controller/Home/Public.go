@@ -33,16 +33,45 @@ func (this *PublicController)Index(e echo.Context) error {
 	return e.JSON(http.StatusOK,core.H{"code":0,"msg":"","data":env})
 }
 
-func (this *PublicController)SetForm(e echo.Context) error {
+type form struct {
+	Datebase string `json:"datebase" form:"datebase" query:"datebase"`
+	Host string `json:"host" form:"host" query:"host"`
+	User string `json:"user" form:"user" query:"user"`
+	Pass string `json:"pass" form:"pass" query:"pass"`
+	Port string `json:"port" form:"port" query:"port"`
+}
+/*
+	修改app.ini配置文件
+ */
+func (this *PublicController)SetForm(e echo.Context) (err error) {
 	conf:=this.Config()
-	//conf.Section("database").NewKey("database",datebase)
-	//conf.Section("database").NewKey("host",dateurl)
-	//conf.Section("database").NewKey("username",user)
-	//conf.Section("database").NewKey("password",pass)
-	err:=conf.SaveTo("./data/app.ini")
+	f:=new(form)
+	if err=e.Bind(f);err!=nil{
+		return
+	}
+	//接收数据
+	conf.Section("database").NewKey("database",f.Datebase)
+	conf.Section("database").NewKey("host",f.Host)
+	conf.Section("database").NewKey("username",f.User)
+	conf.Section("database").NewKey("password",f.Pass)
+	conf.Section("database").NewKey("port",f.Port)
+	//修改ini文件内容
+	err=conf.SaveTo("./data/app.ini")
 	if err!=nil{
 		log.Println("文件写入失败:",err)
-		return err
+		return
 	}
+	conf.Reload()
+	core.ORM.Close()
+	core.ORMLoad()
 	return e.JSON(http.StatusOK,core.H{"code":0,"msg":"修改成功！"})
+}
+
+type adminConf struct {
+	AdminUser string `json:"adminuser" form:"adminuser" query:"adminuser"`
+	AdminPass string `json:"adminpass" form:"adminpass" query:"adminpass"`
+} 
+func (this *PublicController)SetAdmin(e echo.Context) (err error) {
+	
+	return e.JSON(http.StatusOK,core.H{"code":0,"msg":"添加成功！"})
 }

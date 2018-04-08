@@ -1,12 +1,11 @@
 package model
 
 import (
-	"github.com/wxkj001/bbeb/core"
 	"time"
 )
 
 type TagsModel struct {
-	*core.Model
+	//*core.Model
 }
 
 type BlogTags struct {
