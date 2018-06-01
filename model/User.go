@@ -18,6 +18,7 @@ type BlogUsers struct {
 	Headimgurl string    `xorm:"TEXT"`
 	Time       time.Time `xorm:"DateTime"`
 	LoginTime  time.Time `xorm:"DateTime"`
+	Device     string    `xorm:"varchar(255)"`
 	Status     int64     `xorm:"int(2)"`
 }
 

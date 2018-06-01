@@ -2,21 +2,27 @@ package core
 
 import (
 	"log"
+
 	"github.com/go-ini/ini"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
+	"github.com/gorilla/sessions"
 )
+
 var RegStruct map[string]interface{}
 var ORM *xorm.Engine
+var Session *sessions.Session
+
 type H map[string]interface{}
+
 //框架
 type FrameWork struct {
 }
 
-func (f *FrameWork)ORM() *xorm.Engine {
+func (f *FrameWork) XORM() *xorm.Engine {
 	return ORM
 }
-func ORMLoad() (*xorm.Engine,error) {
+func ORMLoad() (*xorm.Engine, error) {
 	//F:=FrameWork{}
 	//c:=F.Config()
 	//host:=c.Section("database").Key("host").String()
@@ -45,16 +51,15 @@ func ORMLoad() (*xorm.Engine,error) {
 	//}
 	//orm.Sync2(new(model.BlogUsers),new(model.BlogTags),new(model.BlogArticle))
 	//ORM=orm
-	return ORM,nil
+	return ORM, nil
 }
-func (f *FrameWork)Config() (file *ini.File) {
+func (f *FrameWork) Config() (file *ini.File) {
 	cfg, err := ini.LoadSources(ini.LoadOptions{IgnoreInlineComment: true}, "data/app.ini")
-	if err!=nil{
+	if err != nil {
 		log.Fatalln("配置文件读取失败")
 	}
 	return cfg
 }
 
 type Model struct {
-
-} 
+}

@@ -19,3 +19,7 @@ import:
   - casbin
 - package: github.com/casbin/casbin
   version: ^1.4.0
+- package: github.com/Knetic/govaluate
+  version: ^3.0.0
+- package: github.com/casbin/xorm-adapter
+- package: github.com/lib/pq
